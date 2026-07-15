@@ -19,3 +19,4 @@ export const getProductById = async (id) => {
 export const deleteProduct = async (id) => {
   return await api.delete(`/products/${id}`);
 };
+
