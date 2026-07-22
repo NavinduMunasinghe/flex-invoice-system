@@ -1,5 +1,6 @@
 package backend.controller;
 
+import backend.dto.CustomerSearchDTO;
 import backend.entity.Customer;
 import backend.service.CustomerService;
 import org.springframework.web.bind.annotation.*;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import backend.dto.CustomerSearchDTO;
 @RestController
 @RequestMapping("/api/customers")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -35,4 +37,11 @@ public class CustomerController {
     public Optional<Customer> searchCustomer(@RequestParam String phone) {
         return customerService.getCustomerByPhone(phone);
     }
+
+    @GetMapping("/history")
+    public List<CustomerSearchDTO> getPurchaseHistory(
+            @RequestParam(required = false) String keyword) {
+
+        return customerService.searchPurchaseHistory(keyword);
+}
 }

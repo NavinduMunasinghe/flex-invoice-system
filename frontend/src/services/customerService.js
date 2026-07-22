@@ -1,13 +1,21 @@
 import api from "./api";
 
-export const searchCustomerByPhone = async (phone) => {
-  return await api.get(`/customers/search?phone=${phone}`);
+// ============================================
+// Purchase History
+// ============================================
+
+export const searchCustomers = async (keyword) => {
+  return await api.get("/customers/history", {
+    params: {
+      keyword,
+    },
+  });
 };
 
-export const saveCustomer = async (customer) => {
-  return await api.post("/customers", customer);
-};
+// ============================================
+// Get Invoice Details
+// ============================================
 
-export const getCustomers = async () => {
-  return await api.get("/customers");
+export const getCustomerInvoice = async (invoiceNo) => {
+  return await api.get(`/customers/invoice/${invoiceNo}`);
 };
