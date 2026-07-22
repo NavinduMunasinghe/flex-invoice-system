@@ -5,6 +5,11 @@ export const saveProduct = async (product) => {
   return await api.post("/products", product);
 };
 
+// Update Product
+export const updateProduct = async (id, product) => {
+  return await api.put(`/products/${id}`, product);
+};
+
 // Get All Products
 export const getProducts = async () => {
   return await api.get("/products");
@@ -19,4 +24,3 @@ export const getProductById = async (id) => {
 export const deleteProduct = async (id) => {
   return await api.delete(`/products/${id}`);
 };
-
