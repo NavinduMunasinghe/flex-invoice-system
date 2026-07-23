@@ -6,6 +6,7 @@ function WarrantyTemplateForm({
   editingTemplate,
   onCancelEdit,
 }) {
+
   const emptyTemplate = {
     templateName: "",
     warrantyTitle: "",
@@ -16,7 +17,9 @@ function WarrantyTemplateForm({
   const [template, setTemplate] = useState(emptyTemplate);
 
   useEffect(() => {
+
     if (editingTemplate) {
+
       setTemplate({
         templateName: editingTemplate.templateName || "",
         warrantyTitle: editingTemplate.warrantyTitle || "",
@@ -24,27 +27,36 @@ function WarrantyTemplateForm({
         termsAndConditions:
           editingTemplate.termsAndConditions || "",
       });
+
     } else {
+
       setTemplate(emptyTemplate);
+
     }
+
   }, [editingTemplate]);
 
   const handleChange = (field, value) => {
+
     setTemplate({
       ...template,
       [field]: value,
     });
+
   };
 
   const clearForm = () => {
+
     setTemplate(emptyTemplate);
 
     if (onCancelEdit) {
       onCancelEdit();
     }
+
   };
 
   const handleSubmit = (e) => {
+
     e.preventDefault();
 
     if (!template.templateName.trim()) {
@@ -74,104 +86,128 @@ function WarrantyTemplateForm({
     }
 
     clearForm();
+
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white rounded-xl shadow-md p-6"
-    >
-      <h2 className="text-2xl font-bold mb-6">
+
+    <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 mb-6">
+
+      <h2 className="text-2xl font-bold text-slate-800 mb-6">
+
         {editingTemplate
           ? "Update Warranty Template"
-          : "Warranty Template"}
+          : "Create Warranty Template"}
+
       </h2>
 
-      <div className="mb-4">
-        <label className="block mb-2 font-medium">
-          Template Name
-        </label>
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-2 gap-5"
+      >
 
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-lg p-3"
-          value={template.templateName}
-          onChange={(e) =>
-            handleChange("templateName", e.target.value)
-          }
-        />
-      </div>
+        <div>
 
-      <div className="mb-4">
-        <label className="block mb-2 font-medium">
-          Warranty Title
-        </label>
+          <label className="block text-sm font-semibold mb-2">
+            Template Name
+          </label>
 
-        <input
-          type="text"
-          className="w-full border border-gray-300 rounded-lg p-3"
-          value={template.warrantyTitle}
-          onChange={(e) =>
-            handleChange("warrantyTitle", e.target.value)
-          }
-        />
-      </div>
+          <input
+            type="text"
+            value={template.templateName}
+            onChange={(e) =>
+              handleChange("templateName", e.target.value)
+            }
+            className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          />
 
-      <div className="mb-4">
-        <label className="block mb-2 font-medium">
-          Warranty Months
-        </label>
+        </div>
 
-        <input
-          type="number"
-          className="w-full border border-gray-300 rounded-lg p-3"
-          value={template.warrantyMonths}
-          onChange={(e) =>
-            handleChange("warrantyMonths", e.target.value)
-          }
-        />
-      </div>
+        <div>
 
-      <div className="mb-6">
-        <label className="block mb-2 font-medium">
-          Terms & Conditions
-        </label>
+          <label className="block text-sm font-semibold mb-2">
+            Warranty Months
+          </label>
 
-        <textarea
-          rows="8"
-          className="w-full border border-gray-300 rounded-lg p-3"
-          value={template.termsAndConditions}
-          onChange={(e) =>
-            handleChange(
-              "termsAndConditions",
-              e.target.value
-            )
-          }
-        />
-      </div>
+          <input
+            type="number"
+            value={template.warrantyMonths}
+            onChange={(e) =>
+              handleChange("warrantyMonths", e.target.value)
+            }
+            className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          />
 
-      <div className="flex gap-3">
-        <button
-          type="submit"
-          className={`text-white px-6 py-3 rounded-lg ${
-            editingTemplate
-              ? "bg-yellow-500 hover:bg-yellow-600"
-              : "bg-green-600 hover:bg-green-700"
-          }`}
-        >
-          {editingTemplate ? "Update Template" : "Save Template"}
-        </button>
+        </div>
 
-        <button
-          type="button"
-          onClick={clearForm}
-          className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg"
-        >
-          Clear
-        </button>
-      </div>
-    </form>
+        <div className="col-span-2">
+
+          <label className="block text-sm font-semibold mb-2">
+            Warranty Title
+          </label>
+
+          <input
+            type="text"
+            value={template.warrantyTitle}
+            onChange={(e) =>
+              handleChange("warrantyTitle", e.target.value)
+            }
+            className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+
+        </div>
+
+        <div className="col-span-2">
+
+          <label className="block text-sm font-semibold mb-2">
+            Terms & Conditions
+          </label>
+
+          <textarea
+            rows={8}
+            value={template.termsAndConditions}
+            onChange={(e) =>
+              handleChange(
+                "termsAndConditions",
+                e.target.value
+              )
+            }
+            className="w-full border border-slate-300 rounded-xl px-4 py-3 text-sm resize-y min-h-[50px] max-h-[600px] focus:ring-2 focus:ring-blue-500 outline-none"
+          />
+
+        </div>
+
+        <div className="col-span-2 flex gap-3">
+
+          <button
+            type="submit"
+            className={`px-6 py-3 rounded-xl text-white font-semibold transition ${
+              editingTemplate
+                ? "bg-yellow-500 hover:bg-yellow-600"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
+          >
+            {editingTemplate
+              ? "Update Template"
+              : "Save Template"}
+          </button>
+
+          <button
+            type="button"
+            onClick={clearForm}
+            className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-3 rounded-xl font-semibold transition"
+          >
+            Clear
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
   );
+
 }
 
 export default WarrantyTemplateForm;

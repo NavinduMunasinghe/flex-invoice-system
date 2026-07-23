@@ -31,15 +31,7 @@ function ProductTable({ setSelectedProduct }) {
       loadProducts();
 
     } catch (error) {
-
-      console.error(error);
-
-      alert("Failed to delete product.");
-
-    }
-
-  };
-
+ 
   const filteredProducts = useMemo(() => {
 
     return products.filter((product) => {

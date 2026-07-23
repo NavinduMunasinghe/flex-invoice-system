@@ -1,23 +1,31 @@
 import { useEffect, useState } from "react";
+import { Plus, Trash2, Package } from "lucide-react";
 import { getProducts } from "../../services/productService";
 
-function ProductSection({ items, setItems }) {
+function ProductSection({
+  items,
+  setItems,
+  total,
+  handleSave,
+}) {
+
   const [products, setProducts] = useState([]);
 
-  const loadProducts = async () => {
-    try {
-      const response = await getProducts();
-      setProducts(response.data);
-    } catch (error) {
-      console.error("Error loading products:", error);
-    }
-  };
-  
   useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const response = await getProducts();
+        setProducts(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
     loadProducts();
   }, []);
 
   const addRow = () => {
+
     setItems([
       ...items,
       {
@@ -28,16 +36,21 @@ function ProductSection({ items, setItems }) {
         warranty: "",
         qty: 1,
         price: 0,
-      }
+      },
     ]);
+
   };
 
   const removeRow = (index) => {
+
     if (items.length === 1) return;
+
     setItems(items.filter((_, i) => i !== index));
+
   };
 
   const handleProductChange = (index, productId) => {
+
     const selected = products.find(
       (p) => String(p.id) === String(productId)
     );
@@ -51,160 +64,224 @@ function ProductSection({ items, setItems }) {
     updated[index].warranty = selected?.warrantyMonths || 0;
 
     setItems(updated);
+
   };
 
   const handleChange = (index, field, value) => {
+
     const updated = [...items];
+
     updated[index][field] = value;
+
     setItems(updated);
+
   };
 
-  const total = items.reduce(
-    (sum, item) => sum + Number(item.qty) * Number(item.price),
-    0
-  );
-
   return (
-    <div className="border rounded-2xl p-6 mt-6 bg-white">
 
-      <h2 className="text-2xl font-bold mb-5">
-        Product Details
-      </h2>
+    <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-8 mt-6">
 
-      <table className="w-full border border-gray-300">
+      {/* Header */}
 
-      <thead className="bg-gray-100">
-        <tr>
-          <th>Code</th>
-          <th>Product Name</th>
-          <th>Serial Number</th>
-          <th>Warranty</th>
-          <th>Qty</th>
-          <th>Unit Price</th>
-          <th>Amount</th>
-          <th className="print:hidden">Action</th>
-        </tr>
-      </thead>
+      <div className="border-b border-slate-200 pb-5 mb-6 flex justify-between items-center">
 
-        <tbody>
+        <div>
 
-          {items.map((item, index) => (
+          <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
 
-            <tr key={index}>
+            <Package size={28} />
 
-              {/* Product Code */}
+            Product Details
 
-              <td className="border px-2 py-1 text-[8.5px] text-center">
-                  {item.code || "-"}
-              </td>
+          </h2>
 
-              {/* Product */}
+          <p className="text-sm text-slate-500 mt-1">
+            Select products for this invoice.
+          </p>
 
-              <td className="border px-2 py-1">
-
-                  <select
-                      className="w-full border rounded px-2 py-1 text-[8.5px]"
-                      value={item.productId}
-                      onChange={(e) =>
-                          handleProductChange(index, e.target.value)
-                      }
-                  >
-                      <option value="">Select Product</option>
-
-                      {products.map((product) => (
-                          <option key={product.id} value={product.id}>
-                              {product.productName}
-                          </option>
-                      ))}
-
-                  </select>
-
-              </td>
-              <td className="border p-2">
-
-                <input
-                  className="w-full border rounded px-2 py-1 text-[8.5px]"
-                  value={item.serial}
-                  onChange={(e) =>
-                    handleChange(index, "serial", e.target.value)
-                  }
-                />
-
-              </td>
-
-              <td className="border px-2 py-1 text-[8.5px] text-center">
-                {item.warranty ? `${item.warranty} Months` : "-"}
-            </td>
-
-              <td className="border p-2">
-
-                <input
-                  type="number"
-                  min="1"
-                  className="w-20 p-2 border rounded"
-                  value={item.qty}
-                  onChange={(e) =>
-                    handleChange(index, "qty", e.target.value)
-                  }
-                />
-
-              </td>
-
-              <td className="border p-2">
-
-                <input
-                  type="number"
-                  className="w-full border rounded px-2 py-1 text-[8.5px] text-right"
-                  value={item.price}
-                  onChange={(e) =>
-                    handleChange(index, "price", e.target.value)
-                  }
-                />
-
-              </td>
-
-              <td className="border px-2 py-1 text-[8.5px] text-right font-semibold">
-
-                Rs. {(item.qty * item.price).toFixed(2)}
-
-              </td>
-
-              <td className="border p-2 text-center">
-
-                <button
-                  onClick={() => removeRow(index)}
-                  className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-[8px] print:hidden"
-                >
-                  Remove
-                </button>
-
-              </td>
-
-            </tr>
-
-          ))}
-
-        </tbody>
-
-      </table>
-
-      <div className="flex justify-between items-center mt-5">
+        </div>
 
         <button
           onClick={addRow}
-          className="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded text-sm print:hidden"
+          className="bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-xl flex items-center gap-2 transition"
         >
-          + Add Product
+          <Plus size={18} />
+          Add Product
         </button>
-
-        <h2 className="text-lg font-bold text-right">
-          Total : Rs. {total.toFixed(2)}
-        </h2>
 
       </div>
 
-    </div>
-  );
+      <div className="overflow-x-auto">
+
+        <table className="w-full">
+
+          <thead>
+
+            <tr className="bg-slate-100">
+
+              <th className="p-3 text-left">Code</th>
+              <th className="p-3 text-left">Product</th>
+              <th className="p-3 text-left">Serial Number</th>
+              <th className="p-3 text-center">Warranty</th>
+              <th className="p-3 text-center">Qty</th>
+              <th className="p-3 text-right">Unit Price</th>
+              <th className="p-3 text-right">Amount</th>
+              <th className="p-3 text-center">Action</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            {items.map((item, index) => (
+
+              <tr
+                key={index}
+                className="border-b hover:bg-slate-50 transition"
+              >
+
+                <td className="p-3 font-medium">
+                  {item.code || "-"}
+                </td>
+
+                <td className="p-3">
+
+                  <select
+                    value={item.productId}
+                    onChange={(e) =>
+                      handleProductChange(index, e.target.value)
+                    }
+                    className="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                  >
+
+                    <option value="">
+                      Select Product
+                    </option>
+
+                    {products.map((product) => (
+
+                      <option
+                        key={product.id}
+                        value={product.id}
+                      >
+                        {product.productCode} - {product.productName}
+                      </option>
+
+                    ))}
+
+                  </select>
+
+                </td>
+
+                <td className="p-3">
+
+                  <input
+                    type="text"
+                    value={item.serial}
+                    onChange={(e) =>
+                      handleChange(index, "serial", e.target.value)
+                    }
+                    className="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+
+                </td>
+
+                <td className="p-3 text-center">
+                  {item.warranty
+                    ? `${item.warranty} Months`
+                    : "-"}
+                </td>
+
+                <td className="p-3">
+
+                  <input
+                    type="number"
+                    min="1"
+                    value={item.qty}
+                    onChange={(e) =>
+                      handleChange(index, "qty", e.target.value)
+                    }
+                    className="w-20 mx-auto border border-slate-300 rounded-xl px-2 py-2 text-center focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+
+                </td>
+
+                <td className="p-3">
+
+                  <input
+                    type="number"
+                    value={item.price}
+                    onChange={(e) =>
+                      handleChange(index, "price", e.target.value)
+                    }
+                    className="w-full border border-slate-300 rounded-xl px-3 py-2 text-right focus:ring-2 focus:ring-blue-500 outline-none"
+                  />
+
+                </td>
+
+                <td className="p-3 text-right font-bold text-blue-700">
+                  Rs. {(item.qty * item.price).toLocaleString()}
+                </td>
+
+                <td className="p-3 text-center">
+
+                  <button
+                    onClick={() => removeRow(index)}
+                    className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-xl transition"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+
+                </td>
+
+              </tr>
+
+            ))}
+
+</tbody>
+
+</table>
+
+</div>
+
+{/* Footer */}
+
+<div className="border-t border-slate-200 mt-6 pt-6">
+
+<div className="flex justify-between items-center">
+
+  <div>
+
+    <p className="text-sm text-slate-500 font-medium">
+      Grand Total
+    </p>
+
+    <h2 className="text-3xl font-bold text-blue-600 mt-1">
+      Rs. {Number(total).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}
+    </h2>
+
+  </div>
+
+  <button
+    type="button"
+    onClick={handleSave}
+    className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg transition-all duration-200"
+  >
+    Save Invoice
+  </button>
+
+</div>
+
+</div>
+
+</div>
+
+);
+
 }
 
 export default ProductSection;

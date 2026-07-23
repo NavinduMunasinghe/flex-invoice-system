@@ -5,142 +5,190 @@ import {
 } from "../../services/warrantyTemplateService";
 
 function WarrantyTemplateTable({ onEdit, refresh }) {
+
   const [templates, setTemplates] = useState([]);
 
-  // ==========================
-  // Load Warranty Templates
-  // ==========================
-  async function loadTemplates() {
-    console.log("Loading Warranty Templates...");
+  const loadTemplates = async () => {
 
     try {
+
       const response = await getWarrantyTemplates();
 
-      console.log("API Response:", response);
-      console.log("API Data:", response.data);
-
       setTemplates(response.data);
+
     } catch (error) {
-      console.error("API Error:", error);
+
+      console.error(error);
+
       alert("Failed to load warranty templates.");
+
     }
-  }
+
+  };
 
   useEffect(() => {
     loadTemplates();
   }, [refresh]);
 
-  // ==========================
-  // Delete Template
-  // ==========================
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this template?"
-    );
 
-    if (!confirmDelete) return;
+    if (
+      !window.confirm(
+        "Delete this warranty template?"
+      )
+    )
+      return;
 
     try {
+
       await deleteWarrantyTemplate(id);
 
-      alert("Warranty Template Deleted Successfully.");
-
       loadTemplates();
+
     } catch (error) {
+
       console.error(error);
+
       alert("Delete Failed.");
+
     }
+
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 mt-6">
-      <h2 className="text-xl font-bold mb-5">
-        Warranty Templates
+
+    <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 mt-6">
+
+      <h2 className="text-2xl font-bold text-slate-800 mb-5">
+
+        Warranty Template List
+
       </h2>
 
       <div className="overflow-x-auto">
-        <table className="w-full border border-gray-300">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="border px-3 py-2 text-left">
+
+        <table className="w-full">
+
+          <thead>
+
+            <tr className="bg-slate-100">
+
+              <th className="p-3 text-left">
                 Code
               </th>
 
-              <th className="border px-3 py-2 text-left">
+              <th className="p-3 text-left">
                 Template Name
               </th>
 
-              <th className="border px-3 py-2 text-left">
+              <th className="p-3 text-left">
                 Warranty Title
               </th>
 
-              <th className="border px-3 py-2 text-center">
+              <th className="p-3 text-center">
                 Months
               </th>
 
-              <th className="border px-3 py-2 text-center">
-                Actions
+              <th className="p-3 text-center">
+                Action
               </th>
+
             </tr>
+
           </thead>
 
           <tbody>
+
             {templates.length === 0 ? (
+
               <tr>
+
                 <td
                   colSpan={5}
-                  className="text-center py-6 text-gray-500"
+                  className="text-center py-10 text-slate-500"
                 >
+
                   No Warranty Templates Found
+
                 </td>
+
               </tr>
+
             ) : (
+
               templates.map((template) => (
+
                 <tr
                   key={template.id}
-                  className="hover:bg-gray-50"
+                  className="border-b hover:bg-slate-50 transition"
                 >
-                  <td className="border px-3 py-2">
+
+                  <td className="p-3 font-medium">
+
                     {template.templateCode}
+
                   </td>
 
-                  <td className="border px-3 py-2">
+                  <td className="p-3">
+
                     {template.templateName}
+
                   </td>
 
-                  <td className="border px-3 py-2">
+                  <td className="p-3">
+
                     {template.warrantyTitle}
+
                   </td>
 
-                  <td className="border px-3 py-2 text-center">
-                    {template.warrantyMonths}
+                  <td className="p-3 text-center">
+
+                    {template.warrantyMonths} Months
+
                   </td>
 
-                  <td className="border px-3 py-2">
+                  <td className="p-3">
+
                     <div className="flex justify-center gap-2">
+
                       <button
-                        onClick={() => onEdit(template)}
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm"
+                        onClick={() =>
+                          onEdit(template)
+                        }
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm transition"
                       >
                         Edit
                       </button>
 
                       <button
-                        onClick={() => handleDelete(template.id)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
+                        onClick={() =>
+                          handleDelete(template.id)
+                        }
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition"
                       >
                         Delete
                       </button>
+
                     </div>
+
                   </td>
+
                 </tr>
+
               ))
+
             )}
+
           </tbody>
+
         </table>
+
       </div>
+
     </div>
+
   );
+
 }
 
 export default WarrantyTemplateTable;

@@ -8,6 +8,7 @@ public class InvoiceItemRequest {
     private String serialNumber;
     private Integer quantity;
     private BigDecimal unitPrice;
+    private Long warrantyTemplateId;
 
     public InvoiceItemRequest() {
     }
@@ -42,5 +43,13 @@ public class InvoiceItemRequest {
 
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public Long getWarrantyTemplateId() {
+        return warrantyTemplateId;
+    }
+
+    public void setWarrantyTemplateId(Long warrantyTemplateId) {
+        this.warrantyTemplateId = warrantyTemplateId;
     }
 }

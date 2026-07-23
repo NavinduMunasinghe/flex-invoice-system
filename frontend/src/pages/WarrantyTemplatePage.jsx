@@ -1,7 +1,10 @@
 import { useState } from "react";
-import MainLayout from "../layouts/MainLayout";
+import { ShieldCheck } from "lucide-react";
+
+import MainLayout from "../components/layout/MainLayout";
 import WarrantyTemplateForm from "../components/warranty/WarrantyTemplateForm";
 import WarrantyTemplateTable from "../components/warranty/WarrantyTemplateTable";
+
 import {
   saveWarrantyTemplate,
   updateWarrantyTemplate,
@@ -17,6 +20,7 @@ function WarrantyTemplatePage() {
   };
 
   const handleSave = async (template) => {
+
     try {
 
       const response = await saveWarrantyTemplate(template);
@@ -39,6 +43,7 @@ function WarrantyTemplatePage() {
       }
 
     }
+
   };
 
   const handleUpdate = async (id, template) => {
@@ -83,19 +88,43 @@ function WarrantyTemplatePage() {
   };
 
   return (
+
     <MainLayout>
 
       <div className="max-w-7xl mx-auto">
 
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">
-            Warranty Template Management
-          </h1>
+        {/* Header */}
 
-          <p className="text-gray-500">
-            Create, Update and Manage Warranty Templates
-          </p>
+        <div className="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 mb-6">
+
+          <div className="flex items-center gap-4">
+
+            <div className="bg-blue-100 p-4 rounded-2xl">
+
+              <ShieldCheck
+                size={32}
+                className="text-blue-600"
+              />
+
+            </div>
+
+            <div>
+
+              <h1 className="text-3xl font-bold text-slate-800">
+                Warranty Template Management
+              </h1>
+
+              <p className="text-slate-500 text-sm mt-1">
+                Create, update and manage warranty templates.
+              </p>
+
+            </div>
+
+          </div>
+
         </div>
+
+        {/* Form */}
 
         <WarrantyTemplateForm
           onSave={handleSave}
@@ -103,6 +132,8 @@ function WarrantyTemplatePage() {
           editingTemplate={editingTemplate}
           onCancelEdit={cancelEdit}
         />
+
+        {/* Table */}
 
         <WarrantyTemplateTable
           refresh={refresh}
@@ -112,7 +143,9 @@ function WarrantyTemplatePage() {
       </div>
 
     </MainLayout>
+
   );
+
 }
 
 export default WarrantyTemplatePage;

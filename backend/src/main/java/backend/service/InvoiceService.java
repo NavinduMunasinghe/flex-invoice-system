@@ -22,6 +22,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import backend.entity.WarrantyTemplate;
+import backend.repository.WarrantyTemplateRepository;
+
+
 @Service
 public class InvoiceService {
 
@@ -29,17 +33,20 @@ public class InvoiceService {
     private final InvoiceItemRepository invoiceItemRepository;
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
+    private final WarrantyTemplateRepository warrantyTemplateRepository;
 
     public InvoiceService(
-            InvoiceRepository invoiceRepository,
-            InvoiceItemRepository invoiceItemRepository,
-            CustomerRepository customerRepository,
-            ProductRepository productRepository
+        InvoiceRepository invoiceRepository,
+        InvoiceItemRepository invoiceItemRepository,
+        CustomerRepository customerRepository,
+        ProductRepository productRepository,
+        WarrantyTemplateRepository warrantyTemplateRepository
     ) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceItemRepository = invoiceItemRepository;
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
+        this.warrantyTemplateRepository = warrantyTemplateRepository;
     }
 
     @Transactional
@@ -76,7 +83,11 @@ public class InvoiceService {
         invoice.setPaymentMethod(request.getPaymentMethod());
 
         // Temporary invoice number
-        invoice.setInvoiceNo("INV-" + System.currentTimeMillis());
+        Long lastId = invoiceRepository.getLastInvoiceId();
+        long nextId = (lastId == null) ? 1 : lastId + 1;
+        String invoiceNo = String.format("FINV-%06d", nextId);
+        invoice.setInvoiceNo(invoiceNo);
+
         invoice.setTotalAmount(BigDecimal.ZERO);
 
         BigDecimal total = BigDecimal.ZERO;
@@ -95,6 +106,9 @@ public class InvoiceService {
             item.setInvoice(savedInvoice);
             item.setProduct(product);
 
+            item.setProductCode(product.getProductCode());
+            item.setProductName(product.getProductName());
+
             item.setSerialNumber(dto.getSerialNumber());
             item.setQuantity(dto.getQuantity());
 
@@ -105,10 +119,17 @@ public class InvoiceService {
 
             item.setAmount(amount);
 
-            item.setWarrantyMonths(product.getWarrantyMonths());
+            WarrantyTemplate template = warrantyTemplateRepository
+                    .findById(product.getWarrantyTemplateId())
+                    .orElseThrow(() ->
+                            new RuntimeException("Warranty Template Not Found"));
 
+            item.setWarrantyTemplateId(template.getId());
+            item.setWarrantyTitle(template.getWarrantyTitle());
+            item.setWarrantyTerms(template.getTermsAndConditions());
+            item.setWarrantyMonths(template.getWarrantyMonths());
             item.setWarrantyExpiry(
-                    LocalDate.now().plusMonths(product.getWarrantyMonths())
+                    LocalDate.now().plusMonths(template.getWarrantyMonths())
             );
 
             invoiceItemRepository.save(item);
@@ -156,22 +177,36 @@ public class InvoiceService {
     
             InvoiceItemResponse dto = new InvoiceItemResponse();
     
-            dto.setProductCode(item.getProduct().getProductCode());
-            dto.setProductName(item.getProduct().getProductName());
+            dto.setProductCode(item.getProductCode());
+            dto.setProductName(item.getProductName());
             dto.setSerialNumber(item.getSerialNumber());
-    
+
+            dto.setWarrantyTitle(item.getWarrantyTitle());
+            dto.setWarrantyTerms(item.getWarrantyTerms());
             dto.setWarrantyMonths(item.getWarrantyMonths());
             dto.setWarrantyExpiry(item.getWarrantyExpiry());
-    
             dto.setQuantity(item.getQuantity());
+            
             dto.setUnitPrice(item.getUnitPrice());
             dto.setAmount(item.getAmount());
     
             itemResponses.add(dto);
         }
+
+
     
         response.setItems(itemResponses);
     
         return response;
+        
     }
+    public Invoice getLatestInvoice() {
+
+        return invoiceRepository
+                .findTopByOrderByIdDesc()
+                .orElse(null);
+    
+    }
+
+    
 }

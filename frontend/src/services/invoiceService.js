@@ -19,3 +19,6 @@ export const getInvoices = async () => {
 export const getInvoiceForPrint = async (invoiceNo) => {
   return await api.get(`/invoices/print/${invoiceNo}`);
 };
+export const getLatestInvoice = () => {
+  return api.get("/invoices/latest");
+};

@@ -8,8 +8,14 @@ public class InvoiceItemResponse {
     private String productCode;
     private String productName;
     private String serialNumber;
+
+    // Warranty
+    private String warrantyTitle;
+    private String warrantyTerms;
     private Integer warrantyMonths;
     private LocalDate warrantyExpiry;
+
+    // Invoice
     private Integer quantity;
     private BigDecimal unitPrice;
     private BigDecimal amount;
@@ -36,6 +42,22 @@ public class InvoiceItemResponse {
 
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public String getWarrantyTitle() {
+        return warrantyTitle;
+    }
+
+    public void setWarrantyTitle(String warrantyTitle) {
+        this.warrantyTitle = warrantyTitle;
+    }
+
+    public String getWarrantyTerms() {
+        return warrantyTerms;
+    }
+
+    public void setWarrantyTerms(String warrantyTerms) {
+        this.warrantyTerms = warrantyTerms;
     }
 
     public Integer getWarrantyMonths() {

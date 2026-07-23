@@ -1,4 +1,3 @@
-console.log("Warranty Service Loaded");
 import api from "./api";
 
 // Get All Warranty Templates
