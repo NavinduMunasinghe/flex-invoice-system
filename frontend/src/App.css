@@ -181,4 +181,16 @@
     right: 0;
     border-right-color: var(--border);
   }
+
+  @media print {
+
+    body {
+      background: white !important;
+    }
+  
+    .print-hidden {
+      display: none !important;
+    }
+  
+  }
 }
