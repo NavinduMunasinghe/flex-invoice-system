@@ -18,6 +18,9 @@ public class Product {
     private String barcode;
 
     @Column(nullable = false)
+    private String category;
+
+    @Column(nullable = false)
     private String brand;
 
     private String model;
@@ -71,6 +74,14 @@ public class Product {
 
     public void setBrand(String brand) {
         this.brand = brand;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+    
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public String getModel() {

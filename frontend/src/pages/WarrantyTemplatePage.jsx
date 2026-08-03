@@ -4,14 +4,17 @@ import { ShieldCheck } from "lucide-react";
 import MainLayout from "../components/layout/MainLayout";
 import WarrantyTemplateForm from "../components/warranty/WarrantyTemplateForm";
 import WarrantyTemplateTable from "../components/warranty/WarrantyTemplateTable";
-
+import { useLocation } from "react-router-dom";
 import {
   saveWarrantyTemplate,
   updateWarrantyTemplate,
 } from "../services/warrantyTemplateService";
 
 function WarrantyTemplatePage() {
+  const location = useLocation();
 
+  const category = location.state?.category || "";
+  const brand = location.state?.brand || "";
   const [refresh, setRefresh] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState(null);
 
@@ -131,6 +134,8 @@ function WarrantyTemplatePage() {
           onUpdate={handleUpdate}
           editingTemplate={editingTemplate}
           onCancelEdit={cancelEdit}
+          category={category}
+          brand={brand}
         />
 
         {/* Table */}

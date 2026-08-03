@@ -4,13 +4,19 @@ import {
   updateProduct,
 } from "../../services/productService";
 import { getWarrantyTemplates } from "../../services/warrantyTemplateService";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+import WarrantyTemplateModal from "../warranty/WarrantyTemplateModal";
 function ProductForm({ selectedProduct, clearSelection }) {
-
+  
+  const navigate = useNavigate();
+  const [showWarrantyModal, setShowWarrantyModal] = useState(false);
   const [templates, setTemplates] = useState([]);
 
   const [product, setProduct] = useState({
     productCode: "",
+    category: "",
     brand: "",
     model: "",
     productName: "",
@@ -21,6 +27,44 @@ function ProductForm({ selectedProduct, clearSelection }) {
     buyingPrice: "",
     stockQty: 0,
   });
+
+  const generateProductCode = (category, brand, model) => {
+
+    if (!category || !brand || !model) {
+      return "";
+    }
+  
+    const categoryMap = {
+      Earbuds: "EAR",
+      Headphones: "HDP",
+      Neckband: "NKB",
+      Charger: "CHA",
+      Cable: "CAB",
+      "Power Bank": "PB",
+      Other: "OTH",
+    };
+  
+    const brandMap = {
+      Soundcore: "SOU",
+      Anker: "ANK",
+      Baseus: "BAS",
+      UGREEN: "UG",
+      Oraimo: "ORA",
+      JOYROOM: "JOY",
+      Awei: "AWE",
+    };
+  
+    const categoryCode = categoryMap[category] || "OTH";
+    const brandCode = brandMap[brand] || brand.substring(0, 3).toUpperCase();
+  
+    const modelCode = model
+      .replace(/\s+/g, "")
+      .replace(/[^A-Za-z0-9]/g, "")
+      .toUpperCase();
+  
+    return `${categoryCode}-${brandCode}-${modelCode}`;
+  
+  };
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -40,22 +84,30 @@ function ProductForm({ selectedProduct, clearSelection }) {
       setProduct(selectedProduct);
     }
   }, [selectedProduct]);
+  
 
   const handleChange = (e) => {
-
     const { name, value, type, checked } = e.target;
-
-    setProduct({
+  
+    const updatedProduct = {
       ...product,
       [name]: type === "checkbox" ? checked : value,
-    });
-
+    };
+  
+    updatedProduct.productCode = generateProductCode(
+      updatedProduct.category,
+      updatedProduct.brand,
+      updatedProduct.model
+    );
+  
+    setProduct(updatedProduct);
   };
 
   const clearForm = () => {
 
     setProduct({
       productCode: "",
+      category: "",
       brand: "",
       model: "",
       productName: "",
@@ -131,21 +183,95 @@ function ProductForm({ selectedProduct, clearSelection }) {
         onSubmit={handleSubmit}
         className="grid grid-cols-2 gap-5"
       >
-        {/* Buying Price */}
-<div>
-  <label className="block text-sm font-semibold text-slate-700 mb-2">
-    Buying Price
-  </label>
 
-  <input
-    type="number"
-    name="buyingPrice"
-    value={product.buyingPrice}
-    onChange={handleChange}
-    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-    required
-  />
-</div>
+      {/* Category */}
+      <div>
+        <label className="block text-sm font-semibold text-slate-700 mb-2">
+          Category
+        </label>
+
+        <select
+          name="category"
+          value={product.category}
+          onChange={handleChange}
+          className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          required
+        >
+          <option value="">Select Category</option>
+
+          <option value="Earbuds">Earbuds</option>
+          <option value="Headphones">Headphones</option>
+          <option value="Neckband">Neckband</option>
+          <option value="Bluetooth Speaker">Bluetooth Speaker</option>
+          <option value="Power Bank">Power Bank</option>
+          <option value="Charger">Charger</option>
+          <option value="Fast Charger">Fast Charger</option>
+          <option value="Charging Cable">Charging Cable</option>
+          <option value="Phone Case">Phone Case</option>
+          <option value="Screen Protector">Screen Protector</option>
+          <option value="Smart Watch">Smart Watch</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div>
+      <label className="block text-sm font-semibold text-slate-700 mb-2">
+        Brand
+      </label>
+
+      <select
+        name="brand"
+        value={product.brand}
+        onChange={handleChange}
+        className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+        required
+      >
+        <option value="">Select Brand</option>
+        <option>Soundcore</option>
+        <option>Anker</option>
+        <option>Baseus</option>
+        <option>UGREEN</option>
+        <option>Oraimo</option>
+        <option>Awei</option>
+        <option>JOYROOM</option>
+      </select>
+    </div>
+
+      {/* Product Name */}
+      <div>
+        <label className="block text-sm font-semibold text-slate-700 mb-2">
+          Product Name
+        </label>
+
+        <input
+          type="text"
+          name="productName"
+          value={product.productName}
+          onChange={handleChange}
+          className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          required
+        />
+      </div>
+
+      {/* Brand */}
+    
+
+    {/* Model */}
+    <div>
+      <label className="block text-sm font-semibold text-slate-700 mb-2">
+        Model
+      </label>
+
+      <input
+        type="text"
+        name="model"
+        value={product.model}
+        onChange={handleChange}
+        className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+      />
+    </div>
+
+     
 
 {/* Product Code */}
 <div>
@@ -153,70 +279,108 @@ function ProductForm({ selectedProduct, clearSelection }) {
     Product Code
   </label>
 
-  <input
-    type="text"
-    name="productCode"
-    value={product.productCode}
-    onChange={handleChange}
-    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-    required
-  />
+  <div className="flex gap-2">
+
+    <input
+      type="text"
+      name="productCode"
+      value={product.productCode}
+      readOnly
+      placeholder="Click Generate"
+      className="flex-1 border border-slate-300 rounded-xl px-4 py-2.5 text-sm bg-slate-100 text-slate-700"
+    />
+
+<button
+  type="button"
+  disabled={!product.category || !product.brand || !product.model}
+  onClick={() => {
+
+    const code = generateProductCode(
+      product.category,
+      product.brand,
+      product.model
+    );
+  
+    if (!code) return;
+  
+    setProduct({
+      ...product,
+      productCode: code,
+    });
+  
+    toast.success("Product Code Generated Successfully!");
+  
+  }}
+  className={`px-4 rounded-xl text-white ${
+    !product.category || !product.brand || !product.model
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-blue-600 hover:bg-blue-700"
+  }`}
+>
+  Generate
+</button>
+
+  </div>
 </div>
 
-{/* Brand */}
-<div>
-  <label className="block text-sm font-semibold text-slate-700 mb-2">
-    Brand
-  </label>
+{/* Warranty Template */}
+
+<div className="col-span-2">
+
+  <div className="flex justify-between items-center mb-2">
+
+    <label className="text-sm font-semibold text-slate-700">
+      Warranty Template
+    </label>
+
+    <button
+      type="button"
+      onClick={() => setShowWarrantyModal(true)}
+      className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+    >
+      + Add New Warranty Template
+    </button>
+  </div>
 
   <select
-    name="brand"
-    value={product.brand}
+    name="warrantyTemplateId"
+    value={product.warrantyTemplateId}
     onChange={handleChange}
     className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-    required
   >
-    <option value="">Select Brand</option>
-    <option>Soundcore</option>
-    <option>Anker</option>
-    <option>Baseus</option>
-    <option>UGREEN</option>
-    <option>Oraimo</option>
-    <option>Awei</option>
-    <option>JOYROOM</option>
+    <option value="">Select Warranty Template</option>
+
+    <option value="NO_WARRANTY">
+      No Warranty
+    </option>
+
+    {templates.map((template) => (
+      <option key={template.id} value={template.id}>
+        {template.templateName}
+      </option>
+    ))}
+
   </select>
+
 </div>
+ {/* Buying Price */}
+ <div>
+        <label className="block text-sm font-semibold text-slate-700 mb-2">
+          Buying Price
+        </label>
 
-{/* Model */}
-<div>
-  <label className="block text-sm font-semibold text-slate-700 mb-2">
-    Model
-  </label>
+        <input
+          type="number"
+          name="buyingPrice"
+          value={product.buyingPrice}
+          onChange={handleChange}
+          className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+          required
+        />
+      </div>
 
-  <input
-    type="text"
-    name="model"
-    value={product.model}
-    onChange={handleChange}
-    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-  />
-</div>
 
-{/* Product Name */}
-<div className="col-span-2">
-  <label className="block text-sm font-semibold text-slate-700 mb-2">
-    Product Name
-  </label>
 
-  <input
-    type="text"
-    name="productName"
-    value={product.productName}
-    onChange={handleChange}
-    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-    required
-  />
-</div>
 
 {/* Selling Price */}
 <div>
@@ -234,43 +398,7 @@ function ProductForm({ selectedProduct, clearSelection }) {
   />
 </div>
 
-{/* Warranty Months */}
-<div>
-  <label className="block text-sm font-semibold text-slate-700 mb-2">
-    Warranty Months
-  </label>
 
-  <input
-    type="number"
-    name="warrantyMonths"
-    value={product.warrantyMonths}
-    onChange={handleChange}
-    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-    required
-  />
-</div>
-
-{/* Warranty Template */}
-<div className="col-span-2">
-  <label className="block text-sm font-semibold text-slate-700 mb-2">
-    Warranty Template
-  </label>
-
-  <select
-    name="warrantyTemplateId"
-    value={product.warrantyTemplateId}
-    onChange={handleChange}
-    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-  >
-    <option value="">Select Warranty Template</option>
-
-    {templates.map((template) => (
-      <option key={template.id} value={template.id}>
-        {template.templateName}
-      </option>
-    ))}
-  </select>
-</div>
 
 {/* Status */}
 <div className="col-span-2 flex items-center gap-3">
@@ -318,7 +446,12 @@ function ProductForm({ selectedProduct, clearSelection }) {
 </div>
 
 </form>
-
+<WarrantyTemplateModal
+    open={showWarrantyModal}
+    onClose={() => setShowWarrantyModal(false)}
+    category={product.category}
+    brand={product.brand}
+/>
 </div>
 
 );

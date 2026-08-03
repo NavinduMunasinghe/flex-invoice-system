@@ -79,6 +79,8 @@ public class WarrantyTemplateService {
         template.setWarrantyTitle(updatedTemplate.getWarrantyTitle());
         template.setWarrantyMonths(updatedTemplate.getWarrantyMonths());
         template.setTermsAndConditions(updatedTemplate.getTermsAndConditions());
+        template.setCategory(updatedTemplate.getCategory());
+        template.setBrand(updatedTemplate.getBrand());
 
         return warrantyTemplateRepository.save(template);
     }

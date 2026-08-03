@@ -1,7 +1,6 @@
 package backend.entity;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,6 +16,12 @@ public class WarrantyTemplate {
 
     @Column(name = "template_name", nullable = false, length = 100)
     private String templateName;
+
+    @Column(name = "category", nullable = false, length = 50)
+    private String category;
+
+    @Column(name = "brand", nullable = false, length = 50)
+    private String brand;
 
     @Column(name = "warranty_title", nullable = false, length = 150)
     private String warrantyTitle;
@@ -76,6 +81,22 @@ public class WarrantyTemplate {
         this.templateName = templateName;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
     public String getWarrantyTitle() {
         return warrantyTitle;
     }
@@ -92,6 +113,14 @@ public class WarrantyTemplate {
         this.warrantyMonths = warrantyMonths;
     }
 
+    public String getTermsAndConditions() {
+        return termsAndConditions;
+    }
+
+    public void setTermsAndConditions(String termsAndConditions) {
+        this.termsAndConditions = termsAndConditions;
+    }
+
     public Boolean getStatus() {
         return status;
     }
@@ -106,13 +135,5 @@ public class WarrantyTemplate {
 
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
-    }
-
-    public String getTermsAndConditions() {
-        return termsAndConditions;
-    }
-    
-    public void setTermsAndConditions(String termsAndConditions) {
-        this.termsAndConditions = termsAndConditions;
     }
 }

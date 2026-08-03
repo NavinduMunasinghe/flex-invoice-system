@@ -5,10 +5,14 @@ function WarrantyTemplateForm({
   onUpdate,
   editingTemplate,
   onCancelEdit,
+  category,
+  brand,
 }) {
 
   const emptyTemplate = {
     templateName: "",
+    category: category || "",
+    brand: brand || "",
     warrantyTitle: "",
     warrantyMonths: "",
     termsAndConditions: "",
@@ -22,6 +26,8 @@ function WarrantyTemplateForm({
 
       setTemplate({
         templateName: editingTemplate.templateName || "",
+        category: editingTemplate.category || "",
+        brand: editingTemplate.brand || "",
         warrantyTitle: editingTemplate.warrantyTitle || "",
         warrantyMonths: editingTemplate.warrantyMonths || "",
         termsAndConditions:
@@ -30,24 +36,32 @@ function WarrantyTemplateForm({
 
     } else {
 
-      setTemplate(emptyTemplate);
+      setTemplate({
+        ...emptyTemplate,
+        templateName:
+          category && brand ? `${category} - ${brand}` : "",
+      });
 
     }
 
-  }, [editingTemplate]);
+  }, [editingTemplate, category, brand]);
 
   const handleChange = (field, value) => {
 
-    setTemplate({
-      ...template,
+    setTemplate((prev) => ({
+      ...prev,
       [field]: value,
-    });
+    }));
 
   };
 
   const clearForm = () => {
 
-    setTemplate(emptyTemplate);
+    setTemplate({
+      ...emptyTemplate,
+      templateName:
+        category && brand ? `${category} - ${brand}` : "",
+    });
 
     if (onCancelEdit) {
       onCancelEdit();
