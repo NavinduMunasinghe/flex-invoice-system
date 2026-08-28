@@ -6,7 +6,6 @@ frontend/dist/
 backend/target/
 
 # IDE
-.vscode/
 .idea/
 
 # OS
@@ -17,4 +16,5 @@ Thumbs.db
 *.log
 
 # Environment
-.env
+config.bat
+node_modules
