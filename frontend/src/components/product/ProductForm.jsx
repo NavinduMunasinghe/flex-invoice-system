@@ -66,17 +66,17 @@ function ProductForm({ selectedProduct, clearSelection }) {
   
   };
 
+  const loadWarrantyTemplates = async () => {
+    try {
+      const response = await getWarrantyTemplates();
+      setTemplates(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   useEffect(() => {
-    const fetchTemplates = async () => {
-      try {
-        const response = await getWarrantyTemplates();
-        setTemplates(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchTemplates();
+    loadWarrantyTemplates();
   }, []);
 
   useEffect(() => {
@@ -122,37 +122,31 @@ function ProductForm({ selectedProduct, clearSelection }) {
   };
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
-
+  
+    const productData = {
+      ...product,
+      warrantyTemplateId:
+        product.warrantyTemplateId === ""
+          ? null
+          : Number(product.warrantyTemplateId),
+    };
+  
     try {
-
       if (selectedProduct) {
-
-        await updateProduct(selectedProduct.id, product);
-
+        await updateProduct(selectedProduct.id, productData);
         alert("Product Updated Successfully");
-
         clearSelection();
-
       } else {
-
-        await saveProduct(product);
-
+        await saveProduct(productData);
         alert("Product Saved Successfully");
-
       }
-
+  
       clearForm();
-
     } catch (error) {
-
       console.error(error);
-
       alert("Failed to save product.");
-
     }
-
   };
 
   return (
@@ -343,24 +337,19 @@ function ProductForm({ selectedProduct, clearSelection }) {
   </div>
 
   <select
-    name="warrantyTemplateId"
-    value={product.warrantyTemplateId}
-    onChange={handleChange}
-    className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-  >
-    <option value="">Select Warranty Template</option>
+  name="warrantyTemplateId"
+  value={product.warrantyTemplateId}
+  onChange={handleChange}
+  className="w-full border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+>
+  <option value="">No Warranty</option>
 
-    <option value="NO_WARRANTY">
-      No Warranty
+  {templates.map((template) => (
+    <option key={template.id} value={template.id}>
+      {template.templateName}
     </option>
-
-    {templates.map((template) => (
-      <option key={template.id} value={template.id}>
-        {template.templateName}
-      </option>
-    ))}
-
-  </select>
+  ))}
+</select>
 
 </div>
  {/* Buying Price */}
@@ -447,10 +436,18 @@ function ProductForm({ selectedProduct, clearSelection }) {
 
 </form>
 <WarrantyTemplateModal
-    open={showWarrantyModal}
-    onClose={() => setShowWarrantyModal(false)}
-    category={product.category}
-    brand={product.brand}
+  open={showWarrantyModal}
+  onClose={() => setShowWarrantyModal(false)}
+  category={product.category}
+  brand={product.brand}
+  onSaved={(newTemplate) => {
+    loadWarrantyTemplates();
+
+    setProduct((prev) => ({
+      ...prev,
+      warrantyTemplateId: newTemplate.id,
+    }));
+  }}
 />
 </div>
 

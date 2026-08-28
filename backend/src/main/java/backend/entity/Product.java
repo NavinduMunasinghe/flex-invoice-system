@@ -34,7 +34,6 @@ public class Product {
     @Column(nullable = false)
     private Integer warrantyMonths;
 
-    @Column(nullable = false)
     private Long warrantyTemplateId;
 
     private Boolean status = true;

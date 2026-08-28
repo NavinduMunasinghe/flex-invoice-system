@@ -82,10 +82,24 @@ public class InvoiceService {
         invoice.setInvoiceDate(LocalDate.now());
         invoice.setPaymentMethod(request.getPaymentMethod());
 
-        // Temporary invoice number
-        Long lastId = invoiceRepository.getLastInvoiceId();
-        long nextId = (lastId == null) ? 1 : lastId + 1;
-        String invoiceNo = String.format("FINV-%06d", nextId);
+        // Generate next invoice number from the latest invoice number
+        Invoice lastInvoice = invoiceRepository
+                .findTopByOrderByInvoiceNoDesc()
+                .orElse(null);
+
+        long nextNumber = 1;
+
+        if (lastInvoice != null && lastInvoice.getInvoiceNo() != null) {
+
+            String lastInvoiceNo = lastInvoice.getInvoiceNo();
+
+            String numberPart = lastInvoiceNo.replace("FINV-", "");
+
+            nextNumber = Long.parseLong(numberPart) + 1;
+        }
+
+        String invoiceNo = String.format("FINV-%06d", nextNumber);
+
         invoice.setInvoiceNo(invoiceNo);
 
         invoice.setTotalAmount(BigDecimal.ZERO);

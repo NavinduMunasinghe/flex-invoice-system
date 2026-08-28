@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Package,
@@ -7,45 +7,65 @@ import {
   ShieldCheck,
   LogOut,
 } from "lucide-react";
+import authService from "../../services/authService";
 
 function Sidebar() {
+  const navigate = useNavigate();
+
   const menus = [
     {
       icon: <LayoutDashboard size={20} />,
       name: "Dashboard",
       path: "/",
     },
-
     {
       icon: <Receipt size={20} />,
       name: "Invoices",
       path: "/invoice",
     },
-
     {
       icon: <Users size={20} />,
       name: "Customers",
       path: "/customers",
     },
-
     {
       icon: <Package size={20} />,
       name: "Products",
       path: "/products",
     },
-
     {
       icon: <ShieldCheck size={20} />,
       name: "Warranty",
       path: "/warranty",
     },
-    
   ];
+
+  // ================================
+  // LOGOUT
+  // ================================
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      // Remove saved login information
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("adminUser");
+
+      // Go to login page
+      navigate("/login", {
+        replace: true,
+      });
+    }
+  };
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-slate-900 text-white flex flex-col">
 
-      {/* Logo */}
+      {/* ================================
+          LOGO
+      ================================= */}
 
       <div className="px-8 py-7 border-b border-slate-800">
 
@@ -59,7 +79,10 @@ function Sidebar() {
 
       </div>
 
-      {/* Navigation */}
+
+      {/* ================================
+          NAVIGATION
+      ================================= */}
 
       <nav className="flex-1 px-4 py-6 space-y-2">
 
@@ -76,6 +99,7 @@ function Sidebar() {
               }`
             }
           >
+
             {menu.icon}
 
             <span>{menu.name}</span>
@@ -86,11 +110,18 @@ function Sidebar() {
 
       </nav>
 
-      {/* Footer */}
+
+      {/* ================================
+          FOOTER / LOGOUT
+      ================================= */}
 
       <div className="border-t border-slate-800 p-5">
 
-        <button className="w-full flex items-center justify-center gap-2 rounded-xl bg-red-600 hover:bg-red-700 py-3 transition">
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-red-600 hover:bg-red-700 py-3 transition"
+        >
 
           <LogOut size={18} />
 

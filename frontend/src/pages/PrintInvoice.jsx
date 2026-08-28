@@ -109,12 +109,12 @@ function PrintInvoice() {
 
         {/* Header */}
 
-        <div className="flex justify-between items-start border-b pb-3">
+        <div className="flex justify-between items-start border-b border-black pb-3">
 
           <img
             src={logo}
             alt="logo"
-            className="w-36"
+            className="w-32"
           />
 
           <div className="text-center">
@@ -127,196 +127,243 @@ function PrintInvoice() {
 
           <div className="text-right">
 
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-xl font-bold">
               FLEX MOBILE
             </h1>
 
-            <p className="text-sm font-semibold">
+            <p className="text-[11px] font-semibold">
               Mobile Accessories Store
             </p>
 
-            <p className="text-xs">
+            <p className="text-[10px]">
               Mob : 0717006123
             </p>
 
-            <p className="text-xs">
+            <p className="text-[10px]">
               flexmobileonline@gmail.com
             </p>
 
           </div>
 
         </div>
-                {/* Customer */}
+        {/* Customer */}
 
-                <div className="grid grid-cols-2 mt-5 text-sm">
+        <div className="grid grid-cols-2 mt-4 text-[12px]">
 
-<div>
+          <div className ="space-y-1">
 
-  <p>
-    <strong>Customer :</strong> {invoice.customerName}
-  </p>
+            <p className="m-0">
+              <strong>Customer :</strong> {invoice.customerName}
+            </p>
 
-  <p className="mt-2">
-    <strong>Phone :</strong> {invoice.customerPhone}
-  </p>
+            <p className="m-0">
+              <strong>Phone :</strong> {invoice.customerPhone}
+            </p>
 
-</div>
+          </div>
 
-<div className="text-right">
+          <div className="text-right space-y-1">
 
-  <p>
-    <strong>Invoice :</strong> {invoice.invoiceNo}
-  </p>
+            <p className="m-0">
+              <strong>Invoice :</strong> {invoice.invoiceNo}
+            </p>
 
-  <p className="mt-2">
-    <strong>Date :</strong> {invoice.invoiceDate}
-  </p>
+            <p className="m-0">
+              <strong>Date :</strong> {invoice.invoiceDate}
+            </p>
 
-  <p className="mt-2">
-    <strong>Payment :</strong> {invoice.paymentMethod}
-  </p>
+            <p className="m-0">
+              <strong>Payment :</strong> {invoice.paymentMethod}
+            </p>
 
-</div>
+          </div>
 
-</div>
+          </div>
 
-{/* Product Table */}
+          {/* Product Table */}
+          <table className="w-full border border-black mt-4 text-[11px]">
 
-<table className="w-full border border-black mt-6 text-xs">
+          <thead>
 
-<thead>
+            <tr>
 
-  <tr>
+              <th className="border border-black py-1 px-2">
+                Code
+              </th>
 
-    <th className="border border-black p-2">Code</th>
+              <th className="border border-black py-1 px-2">
+                Product Name
+              </th>
 
-    <th className="border border-black p-2">
-      Product Name
-    </th>
+              <th className="border border-black py-1 px-2">
+                Serial Number
+              </th>
 
-    <th className="border border-black p-2">
-      Serial Number
-    </th>
+              <th className="border border-black py-1 px-2">
+                Warranty
+              </th>
 
-    <th className="border border-black p-2">
-      Warranty
-    </th>
+              <th className="border border-black py-1 px-2">
+                Qty
+              </th>
 
-    <th className="border border-black p-2">
-      Qty
-    </th>
+              <th className="border border-black py-1 px-2">
+                Unit Price
+              </th>
 
-    <th className="border border-black p-2">
-      Unit Price
-    </th>
+              <th className="border border-black py-1 px-2">
+                Amount
+              </th>
 
-    <th className="border border-black p-2">
-      Amount
-    </th>
+            </tr>
 
-  </tr>
+          </thead>
 
-</thead>
+          <tbody>
 
-<tbody>
+              {invoice.items.map((item, index) => (
 
-  {invoice.items.map((item, index) => (
+                <tr key={index}>
 
-    <tr key={index}>
+                  <td className="border border-black py-1 px-2">
+                    {item.productCode}
+                  </td>
 
-      <td className="border border-black p-2">
-        {item.productCode}
-      </td>
+                  <td className="border border-black py-1 px-2">
+                    {item.productName}
+                  </td>
 
-      <td className="border border-black p-2">
-        {item.productName}
-      </td>
+                  <td className="border border-black py-1 px-2">
+                    {item.serialNumber}
+                  </td>
 
-      <td className="border border-black p-2">
-        {item.serialNumber}
-      </td>
+                  <td className="border border-black py-1 px-2 text-center">
+                    {item.warrantyMonths} Months
+                  </td>
 
-      <td className="border border-black p-2 text-center">
-        {item.warrantyMonths} Months
-      </td>
+                  <td className="border border-black py-1 px-2 text-center">
+                    {item.quantity}
+                  </td>
 
-      <td className="border border-black p-2 text-center">
-        {item.quantity}
-      </td>
+                  <td className="border border-black py-1 px-2 text-right">
+                    Rs. {Number(item.unitPrice).toFixed(2)}
+                  </td>
 
-      <td className="border border-black p-2 text-right">
-        Rs. {Number(item.unitPrice).toFixed(2)}
-      </td>
+                  <td className="border border-black py-1 px-2 text-right">
+                    Rs. {Number(item.amount).toFixed(2)}
+                  </td>
 
-      <td className="border border-black p-2 text-right">
-        Rs. {Number(item.amount).toFixed(2)}
-      </td>
+                </tr>
 
-    </tr>
+              ))}
 
-  ))}
+              <tr>
 
-  <tr>
+              <td
+                colSpan="6"
+                className="border border-black py-1 px-2 text-right font-bold"
+              >
+                TOTAL
+              </td>
 
-    <td
-      colSpan="6"
-      className="border border-black p-2 text-right font-bold"
-    >
-      Total
-    </td>
+              <td className="border border-black py-1 px-2 text-right font-bold">
+                Rs. {Number(invoice.totalAmount).toFixed(2)}
+              </td>
 
-    <td className="border border-black p-2 text-right font-bold">
-      Rs. {Number(invoice.totalAmount).toFixed(2)}
-    </td>
+            </tr>
 
-  </tr>
+          </tbody>
 
-</tbody>
-
-</table>
+        </table>
 
         {/* Payment Notes */}
 
-        <div className="mt-6 text-xs">
+        <div className="mt-4 text-[10px] leading-4">
 
-          <h3 className="font-bold">
-            PAYMENT NOTES
-          </h3>
+        <h3 className="font-bold border-b border-black pb-1 mb-1">
+          PAYMENT NOTES
+        </h3>
 
-          <p className="mt-1">
-            Payment should be made payable to FLEX MOBILE
-            (Mobile Accessories Store)
-          </p>
+        <p>
+          Payment should be made payable to <strong>FLEX MOBILE</strong>.
+          Goods sold are not refundable unless covered under the warranty
+          policy.
+        </p>
 
         </div>
 
         {/* Terms & Conditions */}
 
-        <div className="mt-5 text-xs leading-6">
+        <div className="mt-4 text-[10px]">
 
-          <h3 className="font-bold">
-            TERMS & CONDITIONS
+        <h3 className="font-bold border-b border-black pb-1 mb-2">
+          WARRANTY TERMS & CONDITIONS
+        </h3>
+
+        <div className="leading-[15px] whitespace-pre-line">
+          {invoice.items[0]?.warrantyTerms}
+        </div>
+
+        </div>
+        {/* Signature */}
+
+        {/* Signature Section */}
+
+        <div className="grid grid-cols-2 mt-8 text-[11px]">
+
+        <div>
+
+          <div className="border-t border-black w-48 pt-1">
+            Customer Signature
+          </div>
+
+        </div>
+
+        <div className="flex justify-end">
+
+          <div className="border-t border-black w-48 pt-1 text-center">
+            Authorized Signature
+          </div>
+
+        </div>
+
+        </div>
+        {/* Footer */}
+
+        <div
+          style={{
+            marginTop: "5px",
+            paddingTop: "6px",
+            textAlign: "center",
+          }}
+        >
+
+          <h3
+            style={{
+              fontWeight: "bold",
+              fontSize: "12px",
+              margin: 0,
+            }}
+          >
+            THANK YOU FOR SHOPPING WITH FLEX MOBILE
           </h3>
 
-          <pre className="mt-2 whitespace-pre-wrap font-sans">
-            {invoice.items[0]?.warrantyTerms}
-          </pre>
-
-        </div>
-
-        <div className="mt-8 text-center">
-
-          <p className="text-sm font-bold">
-            Thank You For Shopping With FLEX MOBILE !
+          <p
+            style={{
+              marginTop: "-2px",
+              fontSize: "11px",
+            }}
+          >
+            Mobile Accessories Store | Tel : 0717006123
           </p>
-        <hr />
-        </div>
 
+        </div>
       </div>
 
     </div>
-
+    
   );
+  
 
 }
 

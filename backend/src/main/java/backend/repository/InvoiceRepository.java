@@ -15,6 +15,7 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
     // Latest saved invoice
     Optional<Invoice> findTopByOrderByIdDesc();
+    Optional<Invoice> findTopByOrderByInvoiceNoDesc();
 
     // Get last invoice ID
     @Query("SELECT MAX(i.id) FROM Invoice i")
