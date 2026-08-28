@@ -29,20 +29,28 @@ public class AuthService {
         this.sessionRepository = sessionRepository;
     }
 
+    // =====================================================
+    // LOGIN
+    // =====================================================
+
     public LoginResponse login(LoginRequest request) {
 
-        Admin admin = adminRepository
-                .findByUsername(request.getUsername())
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Invalid username or password"
+        Admin admin =
+                adminRepository
+                        .findByUsername(
+                                request.getUsername()
                         )
-                );
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Invalid username or password"
+                                )
+                        );
 
         if (!PasswordUtil.matches(
                 request.getPassword(),
                 admin.getPassword()
         )) {
+
             throw new RuntimeException(
                     "Invalid username or password"
             );
@@ -60,7 +68,8 @@ public class AuthService {
 
         // Login session = 12 hours
         session.setExpiresAt(
-                LocalDateTime.now().plusHours(12)
+                LocalDateTime.now()
+                        .plusHours(12)
         );
 
         sessionRepository.save(session);
@@ -71,12 +80,22 @@ public class AuthService {
         );
     }
 
+    // =====================================================
+    // LOGOUT
+    // =====================================================
+
     public void logout(String token) {
 
         if (token != null) {
-            sessionRepository.deleteByToken(token);
+
+            sessionRepository
+                    .deleteByToken(token);
         }
     }
+
+    // =====================================================
+    // GET ADMIN BY TOKEN
+    // =====================================================
 
     public Admin getAdminByToken(String token) {
 
@@ -102,6 +121,59 @@ public class AuthService {
         return session.getAdmin();
     }
 
+    // =====================================================
+    // VERIFY ADMIN USERNAME + PASSWORD
+    // =====================================================
+
+    public Admin verifyAdminCredentials(
+            String username,
+            String password
+    ) {
+
+        if (username == null ||
+                username.trim().isEmpty()) {
+
+            throw new RuntimeException(
+                    "Admin username is required"
+            );
+        }
+
+        if (password == null ||
+                password.isEmpty()) {
+
+            throw new RuntimeException(
+                    "Admin password is required"
+            );
+        }
+
+        Admin admin =
+                adminRepository
+                        .findByUsername(
+                                username.trim()
+                        )
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Invalid admin username or password"
+                                )
+                        );
+
+        if (!PasswordUtil.matches(
+                password,
+                admin.getPassword()
+        )) {
+
+            throw new RuntimeException(
+                    "Invalid admin username or password"
+            );
+        }
+
+        return admin;
+    }
+
+    // =====================================================
+    // GET PROFILE
+    // =====================================================
+
     public LoginResponse getProfile(
             String token
     ) {
@@ -115,6 +187,10 @@ public class AuthService {
         );
     }
 
+    // =====================================================
+    // UPDATE PROFILE
+    // =====================================================
+
     public LoginResponse updateProfile(
             String token,
             AdminProfileRequest request
@@ -124,7 +200,9 @@ public class AuthService {
                 getAdminByToken(token);
 
         if (request.getFullName() == null ||
-                request.getFullName().trim().isEmpty()) {
+                request.getFullName()
+                        .trim()
+                        .isEmpty()) {
 
             throw new RuntimeException(
                     "Full name is required"
@@ -132,7 +210,9 @@ public class AuthService {
         }
 
         if (request.getEmail() == null ||
-                request.getEmail().trim().isEmpty()) {
+                request.getEmail()
+                        .trim()
+                        .isEmpty()) {
 
             throw new RuntimeException(
                     "Email is required"
@@ -140,11 +220,13 @@ public class AuthService {
         }
 
         admin.setFullName(
-                request.getFullName().trim()
+                request.getFullName()
+                        .trim()
         );
 
         admin.setEmail(
-                request.getEmail().trim()
+                request.getEmail()
+                        .trim()
         );
 
         admin.setPhone(
@@ -158,6 +240,10 @@ public class AuthService {
                 null
         );
     }
+
+    // =====================================================
+    // CHANGE PASSWORD
+    // =====================================================
 
     public void changePassword(
             String token,
@@ -178,7 +264,8 @@ public class AuthService {
         }
 
         if (request.getNewPassword() == null ||
-                request.getNewPassword().length() < 6) {
+                request.getNewPassword()
+                        .length() < 6) {
 
             throw new RuntimeException(
                     "New password must contain at least 6 characters"
@@ -193,6 +280,10 @@ public class AuthService {
 
         adminRepository.save(admin);
     }
+
+    // =====================================================
+    // CREATE LOGIN RESPONSE
+    // =====================================================
 
     private LoginResponse createResponse(
             Admin admin,
